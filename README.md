@@ -87,3 +87,22 @@ first-flight/
 - Use app-specific passwords or provider tokens for SMTP.
 - Do **not** commit real credentials. Use environment variables everywhere.
 - Configure trusted sender/recipient addresses to avoid spam filtering.
+
+## Deployment (PythonAnywhere)
+
+1. **Project layout** — ensure your files match the following structure (already true in this repo):
+   ```
+   my_project/
+   ├── app.py
+   ├── requirements.txt
+   ├── static/
+   ├── templates/
+   ├── Procfile
+   └── wsgi.py
+   ```
+2. **Create the web app** — Log in to PythonAnywhere ▸ *Web* ▸ *Add a new web app* ▸ choose *Flask* (manual configuration).
+3. **(Optional) Virtualenv** — `mkvirtualenv myenv --python=python3.10` then set the *Virtualenv* path in the Web tab.
+4. **Install dependencies** — in a Bash console: `pip install -r /home/<username>/my_project/requirements.txt`.
+5. **Configure WSGI** — point the Web tab’s *WSGI configuration file* to `/home/<username>/my_project/wsgi.py` (this repo ships the file ready to import `app`).
+6. **Static files** — map `/static` to `/home/<username>/my_project/static` in the Web tab.
+7. **Reload** — click *Reload*; visit `https://<username>.pythonanywhere.com` to verify the site.
