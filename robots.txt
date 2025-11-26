@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+# Add a sitemap once it is hosted (e.g., https://www.awabtravel.com/sitemap.xml)

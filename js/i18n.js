@@ -3,9 +3,10 @@ let currentLang = 'en';
 
 async function loadLanguage(lang) {
   if (translations[lang]) return translations[lang];
-  
+
   try {
-    const response = await fetch(`/static/translations/${lang}.json`);
+    const translationUrl = new URL(`../translations/${lang}.json`, import.meta.url);
+    const response = await fetch(translationUrl);
     if (!response.ok) throw new Error('Failed to load translations');
     const data = await response.json();
     translations[lang] = data;
