@@ -734,5 +734,8 @@ class TravelApp {
 // Initialize the app when DOM is loaded
 let travelApp;
 document.addEventListener('DOMContentLoaded', () => {
-    travelApp = new TravelApp();
+    const root = document.getElementById('root');
+    if (root) {
+        travelApp = new TravelApp();
+    }
 });

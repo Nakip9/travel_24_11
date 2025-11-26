@@ -1,108 +1,61 @@
-# AwabTravel (Flask + i18n)
+# Awab Travel (Static)
 
-A bilingual travel experience site for AwabTravel with English/Arabic i18n, RTL support, and a Flask backend that delivers contact form submissions via email.
+A fully static, bilingual landing experience for Awab Travel. The site now ships as plain HTML, CSS, and JavaScript only—no Flask backend or server-rendered routes.
 
 ## Project Structure
-
 ```
-first-flight/
-├── app.py
-├── Procfile
-├── requirements.txt
-├── README.md
-├── static/
-│   ├── css/
-│   │   └── style.css
-│   ├── img/
-│   ├── js/
-│   │   ├── i18n.js
-│   │   └── main.js
-│   └── translations/
-│       ├── ar.json
-│       └── en.json
-└── templates/
-    ├── about.html
-    └── index.html
+.
+├── assets/                # place logos/images here
+├── css/
+│   └── style.css          # global styles and responsive rules
+├── js/
+│   ├── i18n.js            # language loader (EN/AR JSON)
+│   └── main.js            # interactive single-page experience for index.html
+├── translations/          # static JSON dictionaries for i18n
+│   ├── ar.json
+│   └── en.json
+├── index.html             # landing page (renders dynamic sections via JS)
+├── about.html             # static "about" page
+└── contact.html           # static "contact" page
 ```
 
-## Setup & Run (Local PC)
-
-1. **Install dependencies**
+## Running Locally (no backend required)
+1. From the repo root, start any static server (modules + fetch need HTTP, not a `file://` URL):
    ```bash
-   python -m venv .venv
-   source .venv/bin/activate  # On Windows: .venv\\Scripts\\activate
-   pip install -r requirements.txt
+   python -m http.server 8000
    ```
-2. **Configure email environment variables** (example uses TLS SMTP):
-   ```bash
-   export MAIL_SERVER=smtp.gmail.com
-   export MAIL_PORT=587
-   export MAIL_USE_TLS=true
-   export MAIL_USERNAME=your_email@example.com
-   export MAIL_PASSWORD=your_app_password
-   export MAIL_DEFAULT_SENDER=your_email@example.com
-   export MAIL_RECIPIENT=destination@example.com  # where messages are sent
-   ```
-3. **Run the Flask app**
-   ```bash
-   flask --app app --debug run
-   # or
-   python app.py
-   ```
-4. Open `http://127.0.0.1:5000` and test the form.
+2. Visit `http://localhost:8000/index.html` (or `/about.html`, `/contact.html`).
 
-## Deployment (Render / similar free hosts)
+## Deployment (free static hosts)
+The site is ready to upload as-is to any static host.
 
-1. **Push this repo to GitHub.**
-2. **Create a new Render Web Service** (or similar):
-   - Select your GitHub repo.
-   - Environment: `Python 3`.
-   - Build command: `pip install -r requirements.txt`.
-   - Start command: `gunicorn app:app`.
-   - Set environment variables (`MAIL_SERVER`, `MAIL_PORT`, `MAIL_USE_TLS`, `MAIL_USERNAME`, `MAIL_PASSWORD`, `MAIL_DEFAULT_SENDER`, `MAIL_RECIPIENT`).
-3. **Auto-deploy on commits**: Enable automatic deploys from your main branch.
-4. **Test** the live URL by submitting the contact form.
+### GitHub Pages
+1. Commit & push to GitHub.
+2. In **Settings → Pages**, choose the branch (e.g., `main`) and root (`/`).
+3. Save; Pages will publish at `https://<user>.github.io/<repo>/`.
+4. (Optional) Add a custom domain in **Pages → Custom domain**; create a CNAME record pointing to `<user>.github.io.`
 
-### Heroku notes (if preferred)
-- Add a free Postmark/SMTP provider for outgoing mail.
-- Commands after installing the Heroku CLI:
-  ```bash
-  heroku create first-flight-travels
-  heroku config:set MAIL_SERVER=smtp.sendgrid.net MAIL_PORT=587 MAIL_USE_TLS=true \
-    MAIL_USERNAME=apikey MAIL_PASSWORD=your_sendgrid_key MAIL_DEFAULT_SENDER=from@example.com MAIL_RECIPIENT=to@example.com
-  git push heroku main
-  ```
+### Netlify
+1. Drag-and-drop the repo folder onto <https://app.netlify.com/drop> **or** connect the GitHub repo.
+2. Build command: _none_; Publish directory: `/`.
+3. Netlify auto-issues HTTPS. To add a custom domain: **Site configuration → Domain management → Add domain** and follow the DNS instructions (usually a CNAME to `site-name.netlify.app`).
 
-## i18n Notes
-- Language switcher (EN/AR) loads JSON dictionaries from `static/translations/`.
-- RTL is toggled by setting `dir="rtl"` on `<html>` when Arabic is active.
-- All translatable text uses `data-i18n` keys mapped in the JSON files.
+### Vercel
+1. Create a new project and import the repo.
+2. Framework preset: **Other**; Output directory: `/`.
+3. Deploy. For a custom domain, open the project → **Settings → Domains → Add** and point a CNAME to `<project>.vercel.app` (or A/ALIAS records if root is required). Vercel also provisions HTTPS automatically.
 
-## Contact Form Flow
-- Frontend sends `POST /contact` with JSON `{ name, email, message }`.
-- Flask uses `Flask-Mail` to deliver the email to `MAIL_RECIPIENT` (falls back to `MAIL_USERNAME`).
-- Responses are JSON so the UI can show success/error without reloading.
+## Custom Domain & SSL Checklist
+- Create/confirm a `CNAME` record from `www.yourdomain.com` to the host-provided URL (Netlify/Vercel/GitHub Pages).
+- For apex domains (`yourdomain.com`), use ALIAS/ANAME/AL records if your DNS provider supports them.
+- Wait for DNS to propagate, then verify the domain in the host dashboard. HTTPS certificates are issued automatically on Netlify/Vercel; GitHub Pages will also request one when you check **Enforce HTTPS**.
 
-## Security Tips
-- Use app-specific passwords or provider tokens for SMTP.
-- Do **not** commit real credentials. Use environment variables everywhere.
-- Configure trusted sender/recipient addresses to avoid spam filtering.
+## Performance & Compatibility
+- Uses a small JS bundle with intersection observers and CSS-driven animations; a polyfill from `polyfill.io` is included for older browsers.
+- All assets are referenced relatively (`css/`, `js/`, `translations/`) so the site works from any static root.
+- For best performance, compress any images you place in `assets/` (e.g., via Squoosh) and prefer modern formats (WebP/AVIF).
+- Static hosts automatically provide caching headers; you can also add `_headers` (Netlify) or `vercel.json` rules if you want longer cache lifetimes.
 
-## Deployment (PythonAnywhere)
-
-1. **Project layout** — ensure your files match the following structure (already true in this repo):
-   ```
-   my_project/
-   ├── app.py
-   ├── requirements.txt
-   ├── static/
-   ├── templates/
-   ├── Procfile
-   └── wsgi.py
-   ```
-2. **Create the web app** — Log in to PythonAnywhere ▸ *Web* ▸ *Add a new web app* ▸ choose *Flask* (manual configuration).
-3. **(Optional) Virtualenv** — `mkvirtualenv myenv --python=python3.10` then set the *Virtualenv* path in the Web tab.
-4. **Install dependencies** — in a Bash console: `pip install -r /home/<username>/my_project/requirements.txt`.
-5. **Configure WSGI** — point the Web tab’s *WSGI configuration file* to `/home/<username>/my_project/wsgi.py` (this repo ships the file ready to import `app`).
-6. **Static files** — map `/static` to `/home/<username>/my_project/static` in the Web tab.
-7. **Reload** — click *Reload*; visit `https://<username>.pythonanywhere.com` to verify the site.
+## SEO
+- Pages include descriptive meta tags, Open Graph/Twitter cards, and JSON-LD `TravelAgency` schema on the landing page.
+- `robots.txt` allows full crawling by default; adjust if you need to block specific paths.

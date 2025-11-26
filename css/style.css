@@ -146,6 +146,11 @@ body {
     position: relative;
 }
 
+.nav-link.active {
+    color: var(--primary);
+    font-weight: 600;
+}
+
 .nav-link:hover {
     color: var(--primary);
 }
@@ -295,6 +300,24 @@ body {
     position: relative;
     overflow: hidden;
     background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 50%, #0f172a 100%);
+}
+
+.minimal-hero {
+    min-height: 40vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 1.5rem;
+    background: linear-gradient(135deg, #e0f2fe 0%, #eef2ff 50%, #f8fafc 100%);
+    color: #0f172a;
+}
+
+.minimal-hero .hero-title {
+    color: #0f172a;
+}
+
+.minimal-hero .hero-subtitle {
+    color: #334155;
 }
 
 .hero-background {
@@ -1550,6 +1573,27 @@ body {
 
 .footer-social a:hover {
     transform: translateY(-3px) scale(1.1);
+}
+
+.values-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.25rem;
+    margin-top: 2rem;
+}
+
+.value-card {
+    background: var(--glass);
+    padding: 1.75rem;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    transition: var(--transition);
+}
+
+.value-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-lg);
 }
 
 /* Responsive Design */
